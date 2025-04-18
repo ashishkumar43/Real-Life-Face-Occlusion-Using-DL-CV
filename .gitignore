@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Venv
+data_created/
+Include/
+Lib/
+pyvenv.cfg
+share/
+
+# Output folders (if too large or generated every time)
+output/
+!output/hat_glass/ 
+
+.vscode/
