@@ -2,7 +2,6 @@ print("ashish kumar")
 # Combination hat + sunglasses only
 import os
 import cv2
-import random
 import numpy as np
 from PIL import Image
 import face_alignment
@@ -50,7 +49,7 @@ def overlay_accessory(face_img, accessory_img, x, y, w, h):
     face_img.paste(accessory, (x, y), accessory)
     return face_img
 
-def place_hat_glass(image_path, index):
+def place_hat_glass(image_path, hat_name, glass_name, index):
     img = Image.open(image_path).convert('RGB')
     img_np = np.array(img)
     landmarks = get_landmarks(img_np)
@@ -67,7 +66,6 @@ def place_hat_glass(image_path, index):
     face_width = int(np.linalg.norm(landmarks[0] - landmarks[16]))
 
     # Hat
-    hat_name = random.choice(os.listdir(hat_folder))
     hat_path = os.path.join(hat_folder, hat_name)
     hat_img = Image.open(hat_path)
     hat_offset_x, hat_offset_y = accessory_offsets.get(hat_name, (7, -35))
@@ -78,7 +76,6 @@ def place_hat_glass(image_path, index):
     face_img = overlay_accessory(face_img, hat_img, hat_x, hat_y, hat_w, hat_h)
 
     # Glasses
-    glass_name = random.choice(os.listdir(glass_folder))
     glass_path = os.path.join(glass_folder, glass_name)
     glass_img = Image.open(glass_path)
     glass_offset_x, glass_offset_y = accessory_offsets.get(glass_name, (0, -5))
@@ -99,12 +96,22 @@ def place_hat_glass(image_path, index):
     print(f"save_img: {filename}")
 
 
-# Process all images in increasing order
-image_counter = 0
-for file in sorted(os.listdir(input_folder)):
-    if file.lower().endswith(('.jpg', '.jpeg', '.png')):
-        path = os.path.join(input_folder, file)
-        image_counter += 1
-        place_hat_glass(path, image_counter)
+# Sorted accessory lists
+hat_list = sorted([f for f in os.listdir(hat_folder) if f.lower().endswith(('.png', '.jpg'))])
+glass_list = sorted([f for f in os.listdir(glass_folder) if f.lower().endswith(('.png', '.jpg'))])
 
-print(" All hat + sunglasses images done.")
+#Number of fixed pairs to cycle
+pair_count = min(len(hat_list), len(glass_list))
+
+# Sorted image list
+input_files = sorted([f for f in os.listdir(input_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
+
+# Apply fixed pairs in loop
+for i, file in enumerate(input_files):
+    img_path = os.path.join(input_folder, file)
+    pair_index = i % pair_count
+    hat_name = hat_list[pair_index]
+    glass_name = glass_list[pair_index]
+    place_hat_glass(img_path, hat_name, glass_name, i)
+
+print("All hat + sunglasses images done.")
