@@ -8,7 +8,6 @@ data_created/
 Include/
 Lib/
 pyvenv.cfg
-share/
 
 # Output folders (if too large or generated every time)
 output/
