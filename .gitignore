@@ -5,9 +5,6 @@ __pycache__/
 
 # Venv
 data_created/
-Include/
-Lib/
-pyvenv.cfg
 
 # Output folders (if too large or generated every time)
 output/
