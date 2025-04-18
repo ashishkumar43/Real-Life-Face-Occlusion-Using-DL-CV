@@ -19,24 +19,26 @@ os.makedirs(output_hat_glass, exist_ok=True)
 
 # Offsets
 accessory_offsets = {
-    'hat1.png': (5, -25),
-    'hat2.png': (4.8, -33),
-    'hat3.png': (7, -24),
-    'hat4.png': (5, -27),
+    'hat1.png': (5.4, -23),
+    'hat2.png': (4.8, -36),
+    'hat3.png': (6, -27),
+    'hat4.png': (5, -26),
     'hat5.png': (9, -37),
     'hat6.png': (10, -18),
-    'hat7.png': (7, -11),
-    'hat8.png': (4, -18),
-    'hat9.png': (6, -18),
-    'hat10.png': (8, -18),
-    'hat11.png': (6, -18),
-    'hat12.png': (3, -18),
+    'hat7.png': (6, -11),
+    'hat8.png': (5, -14),
+    'hat9.png': (6, -22),
+    'hat10.png': (8.5, -16),
+    'hat11.png': (5.5, -18),
+    'hat12.png': (3, -17),
     'hat13.png': (5, -18),
-    'hat14.png': (4, -18),
-    'mask1.png': (0, -15),
-    'mask2.png': (2, -10),
-    'mask3.png': (2, -10),
-    'mask4.png': (2, -10),
+    'hat14.png': (4, -15),
+    'hat15.png': (3.5, -20),
+    'hat16.png': (4, -22),
+    'hat17.png': (2, -38),
+    'hat18.png': (4.5, -25),
+    'hat19.png': (4.5, -25),
+    'hat20.png': (4, -25),
 }
 
 def get_landmarks(image):
@@ -69,7 +71,7 @@ def place_hat_glass(image_path, index):
     hat_path = os.path.join(hat_folder, hat_name)
     hat_img = Image.open(hat_path)
     hat_offset_x, hat_offset_y = accessory_offsets.get(hat_name, (7, -35))
-    hat_w = int(face_width * 1.3)
+    hat_w = int(face_width * 1.5)
     hat_h = int(face_height * 1.52)
     hat_x = int(forehead[0] - hat_w // 2 + hat_offset_x)
     hat_y = int(forehead[1] - hat_h + hat_offset_y)
