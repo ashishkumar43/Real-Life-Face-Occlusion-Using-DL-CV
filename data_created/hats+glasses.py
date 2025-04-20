@@ -1,7 +1,6 @@
 print("ashish kumar")
 # Combination hat + sunglasses only
 import os
-import cv2
 import numpy as np
 from PIL import Image
 import face_alignment
@@ -96,22 +95,18 @@ def place_hat_glass(image_path, hat_name, glass_name, index):
     print(f"save_img: {filename}")
 
 
-# Sorted accessory lists
-hat_list = sorted([f for f in os.listdir(hat_folder) if f.lower().endswith(('.png', '.jpg'))])
-glass_list = sorted([f for f in os.listdir(glass_folder) if f.lower().endswith(('.png', '.jpg'))])
+# Get hat1.png to hat20.png in strict order
+hat_list = [f'hat{i}.png' for i in range(1, 21)]
+glass_list = [f'glass{i}.png' for i in range(1,11 )]
 
-#Number of fixed pairs to cycle
-pair_count = min(len(hat_list), len(glass_list))
-
-# Sorted image list
+# Sorted input image list
 input_files = sorted([f for f in os.listdir(input_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
 
-# Apply fixed pairs in loop
+# Apply fixed pairs in order and loop after 20
 for i, file in enumerate(input_files):
+    hat_name = hat_list[i % len(hat_list)]
+    glass_name = glass_list[i % len(glass_list)]
     img_path = os.path.join(input_folder, file)
-    pair_index = i % pair_count
-    hat_name = hat_list[pair_index]
-    glass_name = glass_list[pair_index]
     place_hat_glass(img_path, hat_name, glass_name, i)
 
 print("All hat + sunglasses images done.")
