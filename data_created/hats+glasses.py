@@ -17,26 +17,26 @@ os.makedirs(output_hat_glass, exist_ok=True)
 
 # Offsets
 accessory_offsets = {
-    'hat1.png': (5.4, -23),
-    'hat2.png': (4.8, -36),
-    'hat3.png': (6, -27),
-    'hat4.png': (5, -26),
-    'hat5.png': (9, -37),
-    'hat6.png': (10, -18),
-    'hat7.png': (6, -11),
-    'hat8.png': (5, -14),
-    'hat9.png': (6, -22),
+    'hat1.png': (5.4, -10),
+    'hat2.png': (4.8, -55),
+    'hat3.png': (5.6, -30),
+    'hat4.png': (5.8, -26),
+    'hat5.png': (10, -50),
+    'hat6.png': (10, -11),
+    'hat7.png': (6, -12),
+    'hat8.png': (4, -16),
+    'hat9.png': (3, -35),
     'hat10.png': (8.5, -16),
-    'hat11.png': (5.5, -18),
-    'hat12.png': (3, -17),
-    'hat13.png': (5, -18),
-    'hat14.png': (4, -15),
-    'hat15.png': (3.5, -20),
-    'hat16.png': (4, -22),
-    'hat17.png': (2, -38),
-    'hat18.png': (4.5, -25),
-    'hat19.png': (4.5, -25),
-    'hat20.png': (4, -25),
+    'hat11.png': (5.3, -17.7),
+    'hat12.png': (3, -30),
+    'hat13.png': (5, -25),
+    'hat14.png': (4.2, -20),
+    'hat15.png': (4.5, -40),
+    'hat16.png': (4.2, -25),
+    'hat17.png': (1, -40),
+    'hat18.png': (5, -36),
+    'hat19.png': (3, -37),
+    'hat20.png': (5, -30),
 }
 
 def get_landmarks(image):
@@ -95,14 +95,14 @@ def place_hat_glass(image_path, hat_name, glass_name, index):
     print(f"save_img: {filename}")
 
 
-# Get hat1.png to hat20.png in strict order
+# Get images in serial order
 hat_list = [f'hat{i}.png' for i in range(1, 21)]
 glass_list = [f'glass{i}.png' for i in range(1,11 )]
 
 # Sorted input image list
 input_files = sorted([f for f in os.listdir(input_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
 
-# Apply fixed pairs in order and loop after 20
+# fixed pairs
 for i, file in enumerate(input_files):
     hat_name = hat_list[i % len(hat_list)]
     glass_name = glass_list[i % len(glass_list)]
