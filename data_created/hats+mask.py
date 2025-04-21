@@ -1,9 +1,6 @@
-
-#hat + mask only
-
+print("ashish kumar")
+# Combination hat + mask only
 import os
-import cv2
-import random
 import numpy as np
 from PIL import Image
 import face_alignment
@@ -11,9 +8,6 @@ import face_alignment
 # Load face-alignment model (GPU)
 fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, device='cuda')
 
-image_counter = 0
-
-# Paths
 input_folder = 'images'
 hat_folder = 'Accessories/Hats'
 mask_folder = 'Accessories/Masks'
@@ -21,27 +15,34 @@ output_hat_mask = 'output/hat_mask'
 
 os.makedirs(output_hat_mask, exist_ok=True)
 
+# Offsets
 accessory_offsets = {
-    # Hats
-    'hat1.png': (5, -25),
-    'hat2.png': (4.8, -33),
-    'hat3.png': (7, -24),
-    'hat4.png': (5, -27),
-    'hat5.png': (9, -37),
-    'hat6.png': (10, -18),
-    'hat7.png': (7, -11),
-    'hat8.png': (4, -18),
-    'hat9.png': (6, -18),
-    'hat10.png': (8, -18),
-    'hat11.png': (6, -18),
-    'hat12.png': (3, -18),
-    'hat13.png': (5, -18),
-    'hat14.png': (4, -18),
-    
-    'mask1.png': (0, -15),
-    'mask2.png': (2, -10),
-    'mask3.png': (2, -10),
-    'mask4.png': (2, -10),
+    'hat1.png': (5.4, -10),
+    'hat2.png': (4.8, -55),
+    'hat3.png': (5.6, -30),
+    'hat4.png': (5.8, -26),
+    'hat5.png': (10, -50),
+    'hat6.png': (10, -11),
+    'hat7.png': (6, -12),
+    'hat8.png': (4, -16),
+    'hat9.png': (3, -35),
+    'hat10.png': (8.5, -16),
+    'hat11.png': (5.3, -17.7),
+    'hat12.png': (3, -30),
+    'hat13.png': (5, -25),
+    'hat14.png': (4.2, -20),
+    'hat15.png': (4.5, -40),
+    'hat16.png': (4.2, -25),
+    'hat17.png': (1, -40),
+    'hat18.png': (5, -36),
+    'hat19.png': (3, -37),
+    'hat20.png': (5, -30),
+
+    # mask offsets 
+    'mask1.png': (0, 0),
+    'mask2.png': (0, 0),
+    'mask3.png': (0, 0),
+    'mask4.png': (0, 0),
 }
 
 def get_landmarks(image):
@@ -53,11 +54,12 @@ def overlay_accessory(face_img, accessory_img, x, y, w, h):
     face_img.paste(accessory, (x, y), accessory)
     return face_img
 
-def place_hat_mask(image_path):
+def place_hat_mask(image_path, hat_name, mask_name, index):
     img = Image.open(image_path).convert('RGB')
     img_np = np.array(img)
     landmarks = get_landmarks(img_np)
     if landmarks is None:
+        print(f"No landmarks found: {image_path}")
         return
 
     face_img = img.convert('RGBA')
@@ -69,40 +71,50 @@ def place_hat_mask(image_path):
     face_width = int(np.linalg.norm(landmarks[0] - landmarks[16]))
 
     # Hat
-    hat_name = random.choice(os.listdir(hat_folder))
     hat_path = os.path.join(hat_folder, hat_name)
     hat_img = Image.open(hat_path)
     hat_offset_x, hat_offset_y = accessory_offsets.get(hat_name, (7, -35))
-    hat_w = int(face_width * 1.3)
+    hat_w = int(face_width * 1.5)
     hat_h = int(face_height * 1.52)
     hat_x = int(forehead[0] - hat_w // 2 + hat_offset_x)
     hat_y = int(forehead[1] - hat_h + hat_offset_y)
     face_img = overlay_accessory(face_img, hat_img, hat_x, hat_y, hat_w, hat_h)
 
     # Mask
-    mask_name = random.choice(os.listdir(mask_folder))
     mask_path = os.path.join(mask_folder, mask_name)
     mask_img = Image.open(mask_path)
-    mask_offset_x, mask_offset_y = accessory_offsets.get(mask_name, (0, -10))
+    mask_offset_x, mask_offset_y = accessory_offsets.get(mask_name, (0, 0))
 
-    nose = landmarks[30]
-    chin = landmarks[8]
-    mask_h = int(np.linalg.norm(nose - chin) * 1.3)
-    mask_w = int(mask_h * 1.5)
-    mask_x = int(nose[0] - mask_w // 2 + mask_offset_x)
-    mask_y = int(nose[1] + mask_offset_y)
+    nose = landmarks[33]
+    jaw_left = landmarks[3]
+    jaw_right = landmarks[13]
+    mask_center = nose
+    mask_w = int(np.linalg.norm(jaw_right - jaw_left) * 1.3)
+    mask_h = int(face_height * 1)
+
+    mask_x = int(mask_center[0] - mask_w // 2 + mask_offset_x)
+    mask_y = int(mask_center[1] - mask_h // 3 + mask_offset_y)
     face_img = overlay_accessory(face_img, mask_img, mask_x, mask_y, mask_w, mask_h)
 
-    # Replace filename logic to make outputs continuous
-    global image_counter
-    image_counter += 1
-    filename = f"{image_counter:05}.jpg"  # 00001.jpg, 00002.jpg, ...
-    face_img.convert('RGB').save(os.path.join(out_folder, filename))
+    # Save output
+    filename = f"{index:05}.jpg"
+    face_img.convert('RGB').save(os.path.join(output_hat_mask, filename))
+    print(f"save_img: {filename}")
 
-# Process images
-for file in os.listdir(input_folder):
-    if file.lower().endswith(('.jpg', '.jpeg', '.png')):
-        path = os.path.join(input_folder, file)
-        place_hat_mask(path)
+# Image and accessory lists
+hat_list = [f'hat{i}.png' for i in range(1, 21)]
+mask_list = [f'mask{i}.png' for i in range(1, 5)]
 
-print("✅ Done: hat + mask applied.")
+# Sorted input image list
+input_files = sorted([f for f in os.listdir(input_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
+
+# Apply combination
+for i, file in enumerate(input_files):
+    hat_name = hat_list[i % len(hat_list)]
+    mask_name = mask_list[i % len(mask_list)]
+    img_path = os.path.join(input_folder, file)
+    place_hat_mask(img_path, hat_name, mask_name, i)
+
+print("All hat + mask images done.")
+
+
