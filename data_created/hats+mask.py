@@ -39,8 +39,9 @@ accessory_offsets = {
     'hat20.png': (5.7, -32),
     # 'mask1.png': (0, 0),
     'mask2.png': (0, 0),
-    # 'mask3.png': (0, 0),
-    # 'mask4.png': (0, 0),
+    'mask3.png': (0, 1),
+    'mask4.png': (5, -12),
+    'mask5.png': (-4.6, -5),
 }
 
 def get_landmarks(image):
@@ -87,8 +88,8 @@ def place_hat_mask(image_path, hat_name, mask_name, index):
     jaw_left = landmarks[3]
     jaw_right = landmarks[13]
     mask_center = nose
-    mask_w = int(np.linalg.norm(jaw_right - jaw_left) * 2)
-    mask_h = int(face_height * 1.8)
+    mask_w = int(np.linalg.norm(jaw_right - jaw_left) * 1.8)
+    mask_h = int(face_height * 1.45)
 
     mask_x = int(mask_center[0] - mask_w // 2 + mask_offset_x)
     mask_y = int(mask_center[1] - mask_h // 3 + mask_offset_y)
