@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import os
+import gdown
 from PIL import Image
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image as keras_image
@@ -44,12 +45,25 @@ st.markdown("""
 
 @st.cache_resource
 def load_occlusion_model():
-    return load_model(r"D:\Major_Project\Face_Occlusion_App\efficientnetB1_model (2).h5")
+    model_path = "efficientnetB1_model.h5"
+    gdrive_file_id = "14EjHLSK1e19J-L6I4Xu4bMFnTqsliWlw"
+    gdrive_url = f"https://drive.google.com/uc?id={gdrive_file_id}"
+
+    if not os.path.exists(model_path):
+        with st.spinner("Downloading model from Google Drive... ⏳"):
+            gdown.download(gdrive_url, model_path, quiet=False)
+
+    model = load_model(model_path, compile=False)
+    return model
 
 model = load_occlusion_model()
 
-TRAIN_PATH = r"D:\Major_Project\Face_Occlusion_App\train"  
-class_names = sorted(os.listdir(TRAIN_PATH)) 
+TRAIN_PATH = "train"  
+
+if os.path.exists(TRAIN_PATH):
+    class_names = sorted(os.listdir(TRAIN_PATH))
+else:
+    class_names = ["Masked", "Unmasked", "Partially_Occluded"]  
 
 st.title("😷 Face Occlusion Classification")
 st.markdown("### Please upload an occluded face image to Begin classification")
@@ -62,7 +76,6 @@ if uploaded_file:
 
     st.markdown("#### ✅ Processing...")
 
-    # Preprocess
     resized_img = uploaded_image.resize((240, 240))
     img_array = keras_image.img_to_array(resized_img)
     img_array_exp = np.expand_dims(preprocess_input(img_array), axis=0)
