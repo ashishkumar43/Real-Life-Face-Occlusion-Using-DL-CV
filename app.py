@@ -54,6 +54,7 @@ def load_occlusion_model():
             gdown.download(gdrive_url, model_path, quiet=False)
 
     model = load_model(model_path, compile=False)
+    print("Model loaded successfully!")
     return model
 
 model = load_occlusion_model()
