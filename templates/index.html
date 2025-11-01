@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Occlusion Classification</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>😷 Face Occlusion Classification</h1>
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Upload & Predict</button>
+    </form>
+
+    {% if prediction %}
+        <div>
+            <h2>Prediction: {{ prediction }}</h2>
+            <h3>Confidence: {{ confidence|round(2) }}%</h3>
+        </div>
+    {% endif %}
+
+    {% if uploaded_image %}
+        <div>
+            <h3>Uploaded Image:</h3>
+            <img src="{{ uploaded_image }}" width="300">
+        </div>
+    {% endif %}
+
+    {% if predicted_image %}
+        <div>
+            <h3>Example from Predicted Class:</h3>
+            <img src="{{ predicted_image }}" width="300">
+        </div>
+    {% endif %}
+</body>
+</html>
