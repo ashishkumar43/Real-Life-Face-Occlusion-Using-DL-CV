@@ -1,8 +1,6 @@
-tensorflow
-keras
-gdown
-streamlit
-numpy
-Pillow
 Flask
+tensorflow
+pillow
+numpy
+requests
 gunicorn
